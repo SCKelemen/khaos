@@ -10,6 +10,8 @@
    mov ss, ax     ; setup stack
    mov sp, 0x7C00 ; stack grows downwards from 0x7C00
  
+   call clear_screen
+
    mov si, BL_HEADER
    call print_string
  

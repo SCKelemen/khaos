@@ -1,5 +1,10 @@
  bits 16 
 
+  clear_screen:
+    mov ah, 0
+    int 10h
+    ret
+
   print_string:
    lodsb        ; grab a byte from SI
  
