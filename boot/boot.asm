@@ -21,11 +21,11 @@
    call get_string
  
    mov si, buffer
-   cmp byte [si], 0  ; blank line?
+   cmp byte [si], 0  ; is this line blank?
    je mainloop       ; yes, ignore it
  
    mov si, buffer
-   mov di, BL_CMD_HELLO  ; "hi" command
+   mov di, BL_CMD_HELLO  ; "hello" command
    call strcmp
    jc .helloworld
  
