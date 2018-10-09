@@ -1,6 +1,10 @@
 # khaos
 A shitty operating system
 
+## Table of Contents
+
+    - [Architecure](./docs/architecture.md)
+    
 
 # compile
 
