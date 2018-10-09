@@ -1,26 +1,35 @@
 ;
 ;   bootloader
 ;
+[org 0x7c00]
 
-mov ah, 0x0e    ; int 10/ah = 0eh -> invoke BIOS Teletype
+    mov bx, BL_HEADER           ; print the bootloader header title
+    call print_string           ;
 
-mov al, 'K'     ; load char 'K' into the buffer
-int 0x10        ; invoke draw
+    mov bx, BL_HELLO            ; print the hello message
+    call print_string           ;
 
-mov al, 'H'
-int 0x10
+    jmp $                       ; hang
 
-mov al, 'A'
-int 0x10
+    print_string:
+        pusha           ; move all registers to the stack
+    
+        mov bx, 10      ;
+        add bx, 20      ;
 
-mov al, 'O'
-int 0x10
+        mov ah, 0x0e    ; invoke BIOS teletype method
+        int 0x10        ; print char
 
-mov al, 'S'
-int 0x10
+        popa            ; restore all registers
+        ret             ; return
 
-jmp $
 
-times 510-($-$$) db 0 ; NOP
+; Data
+BL_HEADER:
+    db 'KHAOS Bootloader', 0    ; nul terminated string
 
-dw 0xaa55 ; magic word, must appear at byte 510-512
+BL_HELLO:
+    db 'Hello, World!', 0       ; nul terminated string
+
+    times 510-($-$$) db 0 ; NOP
+    dw 0xaa55 ; magic word, must appear at byte 510-512
