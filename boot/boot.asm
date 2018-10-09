@@ -1,35 +1,67 @@
 ;
 ;   bootloader
 ;
-[org 0x7c00]
+ org 0x7C00
+ bits 16
+ 
+   mov ax, 0  ; set up segments
+   mov ds, ax
+   mov es, ax
+   mov ss, ax     ; setup stack
+   mov sp, 0x7C00 ; stack grows downwards from 0x7C00
+ 
+   mov si, BL_HEADER
+   call print_string
+ 
+ mainloop:
+   mov si, prompt
+   call print_string
+ 
+   mov di, buffer
+   call get_string
+ 
+   mov si, buffer
+   cmp byte [si], 0  ; blank line?
+   je mainloop       ; yes, ignore it
+ 
+   mov si, buffer
+   mov di, BL_CMD_HELLO  ; "hi" command
+   call strcmp
+   jc .helloworld
+ 
+   mov si, buffer
+   mov di, BL_CMD_HELP  ; "help" command
+   call strcmp
+   jc .help
+ 
+   mov si,  BL_INV_CMD
+   call print_string 
+   jmp mainloop  
+ 
+ .helloworld:
+   mov si, BL_HELLO
+   call print_string
+ 
+   jmp mainloop
+ 
+ .help:
+   mov si, BL_HELP
+   call print_string
+ 
+   jmp mainloop
+ 
+ ; Data
+ BL_HEADER db 'KHAOS Bootloader', 0x0D, 0x0A, 0
+ BL_HELLO db 'Hello, World!', 0x0D, 0x0A, 0
+ BL_INV_CMD db 'invalid command.', 0x0D, 0x0A, 0
+ prompt db '>', 0
+ BL_CMD_HELLO db 'hello', 0
+ BL_CMD_HELP db 'help', 0
+ BL_HELP db 'Bootloader commands: hello, help', 0x0D, 0x0A, 0
+ buffer times 64 db 0
+ 
+%include "bios.asm"
+ 
 
-    mov bx, BL_HEADER           ; print the bootloader header title
-    call print_string           ;
-
-    mov bx, BL_HELLO            ; print the hello message
-    call print_string           ;
-
-    jmp $                       ; hang
-
-    print_string:
-        pusha           ; move all registers to the stack
-    
-        mov bx, 10      ;
-        add bx, 20      ;
-
-        mov ah, 0x0e    ; invoke BIOS teletype method
-        int 0x10        ; print char
-
-        popa            ; restore all registers
-        ret             ; return
-
-
-; Data
-BL_HEADER:
-    db 'KHAOS Bootloader', 0    ; nul terminated string
-
-BL_HELLO:
-    db 'Hello, World!', 0       ; nul terminated string
-
-    times 510-($-$$) db 0 ; NOP
-    dw 0xaa55 ; magic word, must appear at byte 510-512
+   times 510-($-$$) db 0 ; fill with nop
+   dw 0AA55h ; magic at byte 510 - 512
