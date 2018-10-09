@@ -4,19 +4,19 @@
 
 mov ah, 0x0e    ; int 10/ah = 0eh -> invoke BIOS Teletype
 
-mov al, 'H'     ; load char 'H' into the buffer
+mov al, 'K'     ; load char 'K' into the buffer
 int 0x10        ; invoke draw
 
-mov al, 'e'
+mov al, 'H'
 int 0x10
 
-mov al, 'l'
+mov al, 'A'
 int 0x10
 
-mov al, 'l'
+mov al, 'O'
 int 0x10
 
-mov al, 'o'
+mov al, 'S'
 int 0x10
 
 jmp $
