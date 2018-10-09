@@ -4,6 +4,7 @@ A shitty operating system
 ## Table of Contents
 
   - [Architecture](./docs/architecture.md)
+  - [CPU Modes](./docs/modes.md)
 
 
 # compile
